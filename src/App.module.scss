@@ -1,0 +1,45 @@
+.app {
+    background: #eee;
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    .title {
+        text-align: center;
+    }
+    .task {
+        background: #fff;
+        position: relative;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 50px;
+        .taskDoneButton {
+            position: absolute;
+            margin: auto;
+            right: 10px;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 0px solid #000;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.26);
+        }
+        &.taskDone {
+            text-decoration: line-through;
+            color: #aaa;
+            .taskDoneButton {
+                background: mediumseagreen;
+                span {
+                    position: absolute;
+                    height: 7px;
+                    width: 10px;
+                    border-bottom: 2px solid #fff;
+                    border-left: 2px solid #fff;
+                    transform: rotate(-45deg);
+                    left: 5px;
+                    bottom: 7px;
+                }
+            }
+        }
+    }
+}
