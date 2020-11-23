@@ -20,46 +20,49 @@ const initialState = {
 		},
 	],
 	doneTasks: [],
+	newTaskId: 4,
 };
 
 const { reducer, actions } = createSlice({
 	name: 'tasks',
 	initialState,
 	reducers: {
+		// Добавить задачу
 		addTask(state, action) {
-			const taskId = state.currentTasks.length;
-			state.currentTasks.push({ id: taskId, text: action.payload });
+			state.currentTasks = [
+				...state.currentTasks,
+				{ id: state.newTaskId++, text: action.payload },
+			];
 		},
 		// Выполнить задачу
 		doneTask(state, action) {
-			// Перебор массива текущих задач
-			for (let i = 0; i < state.currentTasks.length; i++) {
-				// Задача в текущей итерации
-				const task = state.currentTasks[i];
-				// Если id задачи в текущей итерации совпадает с id, переданным в action
-				if (task && task.id === action.payload) {
-					// Добавление текущей задачи в массив выполненных задач
-					state.doneTasks.push(state.currentTasks[task.id]);
-					// Удаление задачи из массива невыполненных(текущих) задач
-					state.currentTasks[task.id] = null;
+			// В action.payload приходит id задачи, которую нужно отметить, как выполненную
+			// Фильтруется массив текущих задач
+			state.currentTasks = state.currentTasks.filter((task) => {
+				// Если id текущей задачи не совпадает с id, из action,
+				// то возвращается текущая задача (копируется в новый массив)
+				if (task.id !== action.payload) {
+					return task;
 				}
-			}
+				// Если id совпадает, то текущая задача копируется в массив выполненных задач
+				// и возвращается false (задача не копируется в новый массив)
+				state.doneTasks = [...state.doneTasks, task];
+				return false;
+			});
 		},
 		// Отменить выполнение задачи
 		unDoneTask(state, action) {
-			// Перебор массива выполненных задач
-			for (let i = 0; i < state.doneTasks.length; i++) {
-				// Задача в текущей итерации
-				const task = state.doneTasks[i];
-				// Если id задачи в текущей итерации совпадает с id, переданным в action
-				if (task && task.id === action.payload) {
-					// Добавление выполненной задачи обратно в массив текущих задач,
-					// на ее прежнее место
-					state.currentTasks[task.id] = task;
-					// Удаление задачи из массива выполненных задач
-					state.doneTasks[i] = null;
+			state.doneTasks = state.doneTasks.filter((task) => {
+				// Если id задачи не совпадает с id, из action,
+				// то возвращается текущая задача (копируется в новый массив)
+				if (task.id !== action.payload) {
+					return task;
 				}
-			}
+				// Если id совпадает, то задача копируется в массив текущих задач
+				// и возвращается false (задача не копируется в новый массив)
+				state.currentTasks = [...state.currentTasks, task];
+				return false;
+			});
 		},
 	},
 });
