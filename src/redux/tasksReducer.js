@@ -3,24 +3,33 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
 	currentTasks: [
 		{
-			id: 0,
-			text: 'Lorem',
-		},
-		{
 			id: 1,
-			text: 'Lorem ipsum dolore',
+			text: 'Lorem'
 		},
 		{
 			id: 2,
-			text: 'Lorem ips',
+			text: 'Lorem ipsum dolore'
 		},
 		{
 			id: 3,
-			text: 'Lorem ipsum',
+			text: 'Lorem ips'
 		},
+		{
+			id: 5,
+			text: 'Lorem ipsum'
+		}
 	],
-	doneTasks: [],
-	newTaskId: 4,
+	doneTasks: [
+		{
+			id: 4,
+			text: 'Lorem ips'
+		},
+		{
+			id: 6,
+			text: 'Lorem ipsum'
+		}
+	],
+	newTaskId: 7
 };
 
 const { reducer, actions } = createSlice({
@@ -28,11 +37,21 @@ const { reducer, actions } = createSlice({
 	initialState,
 	reducers: {
 		// Добавить задачу
-		addTask(state, action) {
-			state.currentTasks = [
-				...state.currentTasks,
-				{ id: state.newTaskId++, text: action.payload },
-			];
+		changeTask(state, action) {
+			if (action.payload.id) {
+				if (action.payload.isTaskDone) {
+					const index = state.doneTasks.findIndex((task) => task.id === action.payload.id);
+					console.log(index);
+					state.doneTasks[index].text = action.payload.text;
+				} else {
+					const index = state.currentTasks.findIndex((task) => task.id === action.payload.id);
+					console.log(index);
+					state.currentTasks[index].text = action.payload.text;
+				}
+			} else {
+				state.currentTasks.push({ id: state.newTaskId, text: action.payload.text });
+				state.newTaskId = state.newTaskId + 1;
+			}
 		},
 		// Выполнить задачу
 		doneTask(state, action) {
@@ -46,7 +65,7 @@ const { reducer, actions } = createSlice({
 				}
 				// Если id совпадает, то текущая задача копируется в массив выполненных задач
 				// и возвращается false (задача не копируется в новый массив)
-				state.doneTasks = [...state.doneTasks, task];
+				state.doneTasks = [ ...state.doneTasks, task ];
 				return false;
 			});
 		},
@@ -60,12 +79,12 @@ const { reducer, actions } = createSlice({
 				}
 				// Если id совпадает, то задача копируется в массив текущих задач
 				// и возвращается false (задача не копируется в новый массив)
-				state.currentTasks = [...state.currentTasks, task];
+				state.currentTasks = [ ...state.currentTasks, task ];
 				return false;
 			});
-		},
-	},
+		}
+	}
 });
 
-export const { addTask, unDoneTask, doneTask } = actions;
+export const { changeTask, unDoneTask, doneTask } = actions;
 export default reducer;
