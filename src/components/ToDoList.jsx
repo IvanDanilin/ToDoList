@@ -1,4 +1,4 @@
-import { Formik } from 'formik';
+import { Formik, Field } from 'formik';
 import { useState } from 'react';
 import { connect } from 'react-redux';
 import { changeTask, doneTask, unDoneTask } from '../redux/tasksReducer';
@@ -33,10 +33,30 @@ const Task = ({
 						}
 					}}
 				>
-					{({ handleSubmit, handleChange, values }) => (
+					{({ handleSubmit, setFieldValue }) => (
 						<form onSubmit={handleSubmit}>
-							<input type="text" name="taskText" onChange={handleChange} value={values.taskText} />
+							<Field type="text" name="taskText" />
 							<button type="submit">Save</button>
+							<button
+								type="button"
+								onClick={() => {
+									if (isAddTask) {
+										setAddTaskFormActive(false);
+									} else {
+										setChangeTaskFetch(false);
+									}
+								}}
+							>
+								Cancel
+							</button>
+							<button
+								type="reset"
+								onClick={() => {
+									setFieldValue('taskText', '');
+								}}
+							>
+								Clear
+							</button>
 						</form>
 					)}
 				</Formik>
@@ -85,6 +105,7 @@ const ToDoList = ({ currentTasks, doneTasks, changeTask, doneTask, unDoneTask })
 						addTaskFormActive={addTaskFormActive}
 						setAddTaskFormActive={setAddTaskFormActive}
 						isAddTask={true}
+						taskText=""
 					/>
 				) : (
 					<button className={classes.addTaskButton} onClick={() => setAddTaskFormActive(true)} />
